@@ -199,3 +199,51 @@ dc02/dc03继承自dc01
 结论：容器之间配置信息的传递，数据卷的生命周期一直持续到没有容器使用它为止
 ```
 
+DockerFile解析
+
+```
+DockerFile是用来构建Docker镜像的构建文件，是由一系列命令和参数构成的脚本
+
+构建三步骤：
+	编写Dockerfile文件
+	docker build
+	docker run
+	
+基本语法:
+	1、每条保留字指令都必须为大写字母且后面要跟随至少一个参数
+	2、指令按照从上到下，顺序执行
+	3、#表示注解
+	4、每条指令都会创建一个新的镜像层，并对镜像进行提交
+
+docker执行Dockerfile的大致流程：
+	1、docker从基础镜像运行一个容器
+	2、执行一条指令并对容器做出修改
+	3、执行类似docker commit的操作提交一个新的镜像层
+	4、docker在基于刚提交的镜像运行一个新的容器
+	5、执行Dockerfile中的下一条指令直到所有指令都执行完成
+```
+
+Dockerfile体系结构(保留字指令)
+
+```
+FROM 		基础镜像，当前新镜像是基于哪个镜像的
+MAINTAINER 	镜像维护者的姓名和邮箱
+RUN 		容器构建时需要运行的命令
+EXPOSE 		当前镜像对外暴露出的端口
+WORKDIR   	指定在创建容器后，终端默认登录的进来工作目录，一个落脚点
+ENV			用来在构建镜像过程中设置环境变量
+ADD			将宿主机目录下的文件拷贝进镜像且ADD命令会自动处理URL和解压tar压缩包
+COPY		拷贝文件或目录到镜像中 COPY src dest/COPY["src","dest"]
+VOLUME		容器数据卷，用于数据保存和持久化工作
+CMD			指定一个容器启动时要运行的命令，Dockerfile中可以有多个CMD指令，但只有最后一个生效，CMD会被
+			docker run之后方参数替换
+ENTRYPOINT	指定一个容器启动时要运行的命令，ENTRYPOINT的目的CMD一样，都是在指定容器启动程序及参数，会对
+			docker run之后方参数进行追加
+ONBUILD		当构建一个被继承的Dockerfile时运行命令，父镜像在被子继承后父镜像的onbuild被触发
+```
+
+案例
+
+```
+列出镜像的变更历史:docker history 镜像名
+```
